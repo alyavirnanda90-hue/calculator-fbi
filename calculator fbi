@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>FBI Calculator Futuristic</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(145deg, #f8fafc, #e9edf3);
+      margin: 0;
+      padding: 40px 0;
+      color: #1e293b;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: #ffffff;
+      border-radius: 24px;
+      box-shadow: 10px 10px 30px rgba(200,210,230,0.4),
+                  -10px -10px 30px rgba(255,255,255,0.9);
+      padding: 40px;
+      width: 90%;
+      max-width: 780px;
+      transition: all 0.3s ease;
+    }
+
+    h2 {
+      text-align: center;
+      font-weight: 600;
+      color: #0f172a;
+      margin-bottom: 8px;
+    }
+
+    p.muted {
+      text-align: center;
+      color: #64748b;
+      margin-bottom: 24px;
+    }
+
+    .card {
+      background: #f9fbff;
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: inset 4px 4px 10px rgba(200,210,230,0.4),
+                  inset -4px -4px 10px rgba(255,255,255,0.9);
+      transition: all 0.2s ease;
+    }
+
+    .card:hover {
+      box-shadow: inset 2px 2px 6px rgba(200,210,230,0.4),
+                  inset -2px -2px 6px rgba(255,255,255,0.9),
+                  0 0 8px rgba(56,189,248,0.2);
+    }
+
+    select, input[type=text] {
+      border: none;
+      background: #f1f5f9;
+      border-radius: 12px;
+      padding: 8px 10px;
+      width: 140px;
+      margin: 6px 4px;
+      box-shadow: inset 3px 3px 6px rgba(200,210,230,0.4),
+                  inset -3px -3px 6px rgba(255,255,255,0.9);
+      transition: all 0.3s ease;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    input:focus, select:focus {
+      background: #ffffff;
+      box-shadow: 0 0 0 3px rgba(56,189,248,0.3);
+      outline: none;
+    }
+
+    input.disabled {
+      background: #d1d5db; /* abu-abu agak gelap */
+      cursor: not-allowed;
+      color: #6b7280;
+    }
+
+    button {
+      background: linear-gradient(90deg, #06b6d4, #3b82f6);
+      color: #fff;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      padding: 12px 20px;
+      width: 48%;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: all 0.25s ease;
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(59,130,246,0.3);
+    }
+
+    .btn-container {
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .total-box {
+      background: #f8fafc;
+      border-radius: 18px;
+      padding: 20px;
+      box-shadow: inset 3px 3px 8px rgba(200,210,230,0.4),
+                  inset -3px -3px 8px rgba(255,255,255,0.9);
+      margin-top: 30px;
+    }
+
+    .result-line {
+      margin-top: 6px;
+      font-size: 14px;
+      color: #475569;
+    }
+
+    .result-line strong {
+      color: #0f172a;
+    }
+
+    .footer {
+      text-align: center;
+      font-size: 13px;
+      color: #64748b;
+      margin-top: 24px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>FBI Calculator</h2>
+    <p class="muted">Fee Based Income In-Branch BRI Life — versi Futuristic 😎</p>
+
+    <div id="activities"></div>
+    <div class="btn-container">
+      <button id="addActivity">+ Tambah Aktivitas</button>
+      <button id="resetAll">♻️ Reset Semua</button>
+    </div>
+
+    <div class="total-box">
+      <div class="result-line"><strong>Total Semua FBI (sebelum pajak):</strong> <span id="grandBefore">Rp 0</span></div>
+      <div class="result-line"><strong>Total Pajak (11%):</strong> <span id="grandTax">Rp 0</span></div>
+      <div class="result-line"><strong>Total Setelah Pajak:</strong> <span id="grandAfter">Rp 0</span></div>
+    </div>
+
+    <div class="footer">Made with 💙 — by Kamu dan Sohib Futuristik-mu 🤖</div>
+  </div>
+
+  <script>
+    const products = [
+      ['Davestera', '0.25', '0.01', '0.01'],
+      ['Davestera Optima', '0.025', '0', '0.01'],
+      ['Aurora Plus', '0.30', '0', '0'],
+      ['Aurora Plus Sekaligus', '0.30', '0', '0'],
+      ['Kirana Plus Lumpsum', '0.10', '0', '0'],
+      ['Kirana Plus Tahunan', '0.10', '0', '0'],
+      ['Kirana Plus','0.30','0','0'],
+      ['AMORA 5 Tahunan', '0.175', '0', '0'],
+      ['AMORA 10 Tahunan', '0.35', '0', '0'],
+      ['AMORA Sekaligus', '0.10', '0', '0'],
+      ['ARUNIKA 5 Tahunan', '0.175', '0', '0'],
+      ['ARUNIKA 10 Tahunan', '0.35', '0', '0'],
+      ['ARUNIKA Sekaligus', '0.10', '0', '0']
+    ];
+
+    const formatRp = v => new Intl.NumberFormat('id-ID', {style:'currency', currency:'IDR', maximumFractionDigits:0}).format(v);
+    const formatNumber = v => new Intl.NumberFormat('id-ID').format(v);
+    const parseNumber = val => Number(val.replace(/[^0-9]/g, '')) || 0;
+
+    const activitiesDiv = document.getElementById('activities');
+    const grandBeforeEl = document.getElementById('grandBefore');
+    const grandTaxEl = document.getElementById('grandTax');
+    const grandAfterEl = document.getElementById('grandAfter');
+
+    function formatInput(el){
+      let val = el.value.replace(/[^0-9]/g, '');
+      if(val === '') val = '0';
+      el.value = formatNumber(val);
+    }
+
+    function createActivity(){
+      const div = document.createElement('div');
+      div.className = 'card';
+
+      const productSelect = document.createElement('select');
+      products.forEach((p,i)=>{
+        const opt=document.createElement('option');
+        opt.value=i; opt.textContent=p[0];
+        productSelect.appendChild(opt);
+      });
+
+      const premi = document.createElement('input');
+      premi.type='text'; premi.value='0'; premi.placeholder='Premi Dasar';
+
+      const berkala = document.createElement('input');
+      berkala.type='text'; berkala.value='0'; berkala.placeholder='Top-up Berkala';
+
+      const sekaligus = document.createElement('input');
+      sekaligus.type='text'; sekaligus.value='0'; sekaligus.placeholder='Top-up Sekaligus';
+
+      const resultBefore = document.createElement('div');
+      resultBefore.className = 'result-line';
+      const resultTax = document.createElement('div');
+      resultTax.className = 'result-line';
+      const resultAfter = document.createElement('div');
+      resultAfter.className = 'result-line';
+
+      [premi, berkala, sekaligus].forEach(el=>{
+        el.addEventListener('input', ()=>{
+          formatInput(el);
+          updateAll();
+        });
+      });
+
+      function updateInputState() {
+        const productName = productSelect.options[productSelect.selectedIndex].text;
+
+        if(productName === 'Davestera') {
+          berkala.disabled = false;
+          sekaligus.disabled = false;
+          berkala.classList.remove('disabled');
+          sekaligus.classList.remove('disabled');
+        } else if(productName === 'Davestera Optima') {
+          berkala.disabled = true;
+          berkala.value = '0';
+          berkala.classList.add('disabled');
+
+          sekaligus.disabled = false;
+          sekaligus.classList.remove('disabled');
+        } else {
+          berkala.disabled = true;
+          berkala.value = '0';
+          berkala.classList.add('disabled');
+
+          sekaligus.disabled = true;
+          sekaligus.value = '0';
+          sekaligus.classList.add('disabled');
+        }
+      }
+
+      productSelect.addEventListener('change', ()=>{
+        updateInputState();
+        updateAll();
+      });
+
+      div.append(
+        'Produk: ', productSelect, document.createElement('br'),
+        'Premi: ', premi,
+        ' Berkala: ', berkala,
+        ' Sekaligus: ', sekaligus,
+        resultBefore, resultTax, resultAfter
+      );
+
+      div.calc = () => {
+        const p = products[productSelect.value];
+        const fbiPremi = parseNumber(premi.value) * p[1];
+        const fbiBerkala = parseNumber(berkala.value) * p[2];
+        const fbiSekaligus = parseNumber(sekaligus.value) * p[3];
+        const total = fbiPremi + fbiBerkala + fbiSekaligus;
+        const pajak = total * 0.11;
+        const afterTax = total - pajak;
+
+        resultBefore.innerHTML = `💡 <strong>Sebelum Pajak:</strong> ${formatRp(total)}`;
+        resultTax.innerHTML = `🧾 <strong>Pajak (11%):</strong> ${formatRp(pajak)}`;
+        resultAfter.innerHTML = `✅ <strong>Setelah Pajak:</strong> ${formatRp(afterTax)}`;
+
+        return { total, pajak, afterTax };
+      };
+
+      activitiesDiv.appendChild(div);
+      updateInputState();
+    }
+
+    function updateAll(){
+      let totalBefore=0, totalTax=0, totalAfter=0;
+      document.querySelectorAll('.card').forEach(c=>{
+        const res = c.calc();
+        totalBefore += res.total;
+        totalTax += res.pajak;
+        totalAfter += res.afterTax;
+      });
+      grandBeforeEl.textContent = formatRp(totalBefore);
+      grandTaxEl.textContent = formatRp(totalTax);
+      grandAfterEl.textContent = formatRp(totalAfter);
+    }
+
+    document.getElementById('addActivity').addEventListener('click', ()=>{
+      createActivity();
+      updateAll();
+    });
+
+    document.getElementById('resetAll').addEventListener('click', ()=>{
+      if(confirm('⚠️ Yakin mau reset semua aktivitas? Semua data akan hilang!')) {
+        activitiesDiv.innerHTML = '';
+        createActivity();
+        updateAll();
+      }
+    });
+
+    // Init pertama
+    createActivity();
+    updateAll();
+  </script>
+</body>
+</html>
